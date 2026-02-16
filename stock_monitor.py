@@ -11,9 +11,16 @@ import requests
 from datetime import datetime
 from typing import List, Dict, Any
 import threading
-import tkinter as tk
-from tkinter import messagebox, scrolledtext
 import sys
+
+# 尝试导入tkinter，如果失败则使用命令行模式
+try:
+    import tkinter as tk
+    from tkinter import messagebox, scrolledtext
+    TKINTER_AVAILABLE = True
+except ImportError:
+    TKINTER_AVAILABLE = False
+    print("警告: tkinter未安装，将使用命令行模式")
 
 
 class StockAnalyzer:
@@ -389,17 +396,21 @@ class StockMonitor:
         alert_msg = f"【{stock_name} ({stock_code})】\n\n" + "\n".join(alerts)
         print(f"\n!!! 提醒 !!!\n{alert_msg}\n")
         
-        # 在主线程中显示弹窗
-        try:
-            if self.alert_window and self.alert_window.winfo_exists():
-                self.alert_window.lift()
-            else:
-                self.create_alert_window(stock_name, stock_code, alerts)
-        except:
-            pass
+        # 如果tkinter可用，在主线程中显示弹窗
+        if TKINTER_AVAILABLE:
+            try:
+                if self.alert_window and self.alert_window.winfo_exists():
+                    self.alert_window.lift()
+                else:
+                    self.create_alert_window(stock_name, stock_code, alerts)
+            except:
+                pass
     
     def create_alert_window(self, stock_name: str, stock_code: str, alerts: List[str]):
         """创建提醒窗口"""
+        if not TKINTER_AVAILABLE:
+            return
+            
         try:
             window = tk.Toplevel()
             window.title(f"股票提醒 - {stock_name}")
@@ -580,14 +591,33 @@ def main():
     ╚══════════════════════════════════════════════════════════╝
     """)
     
-    # 启动GUI
-    try:
-        gui = StockMonitorGUI()
-        gui.run()
-    except KeyboardInterrupt:
-        print("\n程序已退出")
-    except Exception as e:
-        print(f"程序运行出错: {str(e)}")
+    # 检查是否有命令行参数
+    if len(sys.argv) > 1 and sys.argv[1] == '--cli':
+        # 命令行模式
+        print("以命令行模式运行...")
+        monitor = StockMonitor()
+        try:
+            monitor.start()
+            # 保持运行
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            monitor.stop()
+            print("\n程序已退出")
+    else:
+        # 尝试启动GUI
+        if TKINTER_AVAILABLE:
+            try:
+                gui = StockMonitorGUI()
+                gui.run()
+            except KeyboardInterrupt:
+                print("\n程序已退出")
+            except Exception as e:
+                print(f"GUI启动失败: {str(e)}")
+                print("请使用 --cli 参数以命令行模式运行")
+        else:
+            print("tkinter未安装，请使用 --cli 参数以命令行模式运行:")
+            print("  python stock_monitor.py --cli")
 
 
 if __name__ == "__main__":

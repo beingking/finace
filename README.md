@@ -67,7 +67,7 @@ pip install -r requirements.txt
 
 ### 2. 启动程序
 
-#### 图形界面模式（推荐）
+#### 图形界面模式（推荐，需要安装tkinter）
 ```bash
 python stock_monitor.py
 ```
@@ -79,7 +79,16 @@ python stock_monitor.py
 - 点击"停止监控"按钮停止监控
 
 #### 命令行模式
-如果您想在无GUI环境下运行，可以修改代码使用命令行模式。
+如果没有安装tkinter或在服务器环境下运行：
+```bash
+python stock_monitor.py --cli
+```
+
+#### 单次扫描演示
+快速体验程序功能（执行一次扫描后退出）：
+```bash
+python demo.py
+```
 
 ## 配置说明
 
