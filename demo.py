@@ -5,7 +5,12 @@
 """
 
 import sys
-sys.path.insert(0, '/home/runner/work/finace/finace')
+import os
+
+# 确保可以导入stock_monitor模块
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
 
 from stock_monitor import StockMonitor
 
