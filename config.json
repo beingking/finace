@@ -1,0 +1,27 @@
+{
+  "watchlist": [
+    "600000",
+    "000001",
+    "000002",
+    "600519",
+    "000858"
+  ],
+  "scan_interval": 60,
+  "alert_conditions": {
+    "price_change_threshold": 3.0,
+    "volume_threshold": 200,
+    "buy_signal_threshold": 5,
+    "sell_signal_threshold": -5
+  },
+  "technical_analysis": {
+    "enable_ma": true,
+    "enable_rsi": true,
+    "enable_macd": true,
+    "enable_kdj": true,
+    "enable_boll": true
+  },
+  "api_config": {
+    "timeout": 10,
+    "retry_times": 3
+  }
+}
